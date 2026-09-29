@@ -1435,4 +1435,740 @@ function processFile(
                 parserErrors
         },
 
-        records
+        records:
+            withoutEmpty,
+
+        recordCount:
+            withoutEmpty.length,
+
+        originalRecordCount:
+            records.length,
+
+        removedEmptyRecords:
+            records.length -
+            withoutEmpty.length,
+
+        metadata,
+
+        startedAt,
+
+        finishedAt
+    };
+}
+
+/* ============================================================
+   معالجة ملفات متعددة
+============================================================ */
+
+function processManyFiles(
+    filePaths,
+    options = {}
+) {
+    if (
+        !Array.isArray(
+            filePaths
+        )
+    ) {
+        throw new FileEngineError(
+            "filePaths يجب أن تكون مصفوفة.",
+            "INVALID_FILE_LIST"
+        );
+    }
+
+    const results = [];
+
+    for (
+        const filePath of
+            filePaths
+    ) {
+        try {
+            const result =
+                processFile(
+                    filePath,
+                    options
+                );
+
+            results.push({
+                success:
+                    true,
+
+                file:
+                    filePath,
+
+                result
+            });
+        } catch (
+            error
+        ) {
+            results.push({
+                success:
+                    false,
+
+                file:
+                    filePath,
+
+                error:
+                    serializeError(
+                        error
+                    )
+            });
+        }
+    }
+
+    const successful =
+        results.filter(
+            item =>
+                item.success
+        );
+
+    const failed =
+        results.filter(
+            item =>
+                !item.success
+        );
+
+    const totalRecords =
+        successful.reduce(
+            (
+                total,
+                item
+            ) =>
+                total +
+                (
+                    item
+                        .result
+                        ?.recordCount ||
+                    0
+                ),
+            0
+        );
+
+    return {
+        success:
+            failed.length ===
+            0,
+
+        summary: {
+            files:
+                results.length,
+
+            successful:
+                successful.length,
+
+            failed:
+                failed.length,
+
+            totalRecords
+        },
+
+        results
+    };
+}
+
+/* ============================================================
+   دمج الملفات
+============================================================ */
+
+function mergeFileResults(
+    results
+) {
+    if (
+        !Array.isArray(
+            results
+        )
+    ) {
+        return {
+            records: [],
+            recordCount: 0,
+            sources: []
+        };
+    }
+
+    const records = [];
+
+    const sources = [];
+
+    for (
+        const item of
+            results
+    ) {
+        if (
+            !item ||
+            !item.success
+        ) {
+            continue;
+        }
+
+        const result =
+            item.result;
+
+        if (
+            Array.isArray(
+                result?.records
+            )
+        ) {
+            records.push(
+                ...result.records
+            );
+        }
+
+        sources.push({
+            name:
+                result?.file?.name ||
+                item.file,
+
+            type:
+                result?.file?.type ||
+                "unknown",
+
+            sha256:
+                result?.file?.sha256 ||
+                null,
+
+            records:
+                result?.recordCount ||
+                0
+        });
+    }
+
+    return {
+        records,
+
+        recordCount:
+            records.length,
+
+        sources
+    };
+}
+
+/* ============================================================
+   إزالة التكرار بين الملفات
+============================================================ */
+
+function stableSerialize(
+    value
+) {
+    if (
+        value === null ||
+        typeof value !==
+            "object"
+    ) {
+        return JSON.stringify(
+            value
+        );
+    }
+
+    if (
+        Array.isArray(
+            value
+        )
+    ) {
+        return `[${value
+            .map(
+                stableSerialize
+            )
+            .join(",")}]`;
+    }
+
+    const keys =
+        Object.keys(
+            value
+        ).sort();
+
+    return `{${keys
+        .map(
+            key =>
+                `${JSON.stringify(
+                    key
+                )}:${stableSerialize(
+                    value[key]
+                )}`
+        )
+        .join(",")}}`;
+}
+
+function deduplicateRecords(
+    records
+) {
+    const seen =
+        new Set();
+
+    const unique =
+        [];
+
+    let duplicates =
+        0;
+
+    for (
+        const record of
+            records
+    ) {
+        const key =
+            stableSerialize(
+                record
+            );
+
+        if (
+            seen.has(
+                key
+            )
+        ) {
+            duplicates++;
+            continue;
+        }
+
+        seen.add(
+            key
+        );
+
+        unique.push(
+            record
+        );
+    }
+
+    return {
+        records:
+            unique,
+
+        original:
+            records.length,
+
+        unique:
+            unique.length,
+
+        duplicates
+    };
+}
+
+/* ============================================================
+   دمج وتنظيف نتائج ملفات متعددة
+============================================================ */
+
+function combineProcessedFiles(
+    fileResults,
+    options = {}
+) {
+    const merged =
+        mergeFileResults(
+            fileResults
+        );
+
+    let records =
+        merged.records;
+
+    const before =
+        records.length;
+
+    if (
+        options.removeDuplicates !==
+        false
+    ) {
+        records =
+            deduplicateRecords(
+                records
+            ).records;
+    }
+
+    const after =
+        records.length;
+
+    return {
+        success:
+            true,
+
+        records,
+
+        recordCount:
+            after,
+
+        sources:
+            merged.sources,
+
+        statistics: {
+            before,
+
+            after,
+
+            duplicatesRemoved:
+                before -
+                after
+        }
+    };
+}
+
+/* ============================================================
+   إنشاء Dataset من الملفات
+============================================================ */
+
+function createDatasetDraft(
+    result,
+    options = {}
+) {
+    const records =
+        Array.isArray(
+            result?.records
+        )
+            ? result.records
+            : [];
+
+    const name =
+        String(
+            options.name ||
+            "NOVA File Dataset"
+        )
+            .trim();
+
+    return {
+        id:
+            makeId(
+                "dataset"
+            ),
+
+        name,
+
+        type:
+            options.type ||
+            "file_dataset",
+
+        records,
+
+        recordCount:
+            records.length,
+
+        status:
+            "collected",
+
+        source: {
+            type:
+                "files",
+
+            files:
+                result?.sources ||
+                []
+        },
+
+        createdAt:
+            now(),
+
+        updatedAt:
+            now(),
+
+        engine: {
+            name:
+                "NOVA DATA AI File Engine",
+
+            version:
+                CONFIG.VERSION
+        }
+    };
+}
+
+/* ============================================================
+   فحص بصمة الملف
+============================================================ */
+
+function fileChecksum(
+    filePath
+) {
+    const raw =
+        readFileBuffer(
+            filePath
+        );
+
+    return {
+        file:
+            raw.fileName,
+
+        bytes:
+            raw.size,
+
+        sha256:
+            createHash(
+                raw.buffer
+            )
+    };
+}
+
+/* ============================================================
+   تحديد نوع البيانات من الاسم
+============================================================ */
+
+function getSupportedFormats() {
+    return [
+        {
+            extension:
+                ".txt",
+
+            type:
+                "text"
+        },
+
+        {
+            extension:
+                ".text",
+
+            type:
+                "text"
+        },
+
+        {
+            extension:
+                ".json",
+
+            type:
+                "json"
+        },
+
+        {
+            extension:
+                ".jsonl",
+
+            type:
+                "jsonl"
+        },
+
+        {
+            extension:
+                ".ndjson",
+
+            type:
+                "jsonl"
+        },
+
+        {
+            extension:
+                ".csv",
+
+            type:
+                "csv"
+        }
+    ];
+}
+
+/* ============================================================
+   معلومات المحرك
+============================================================ */
+
+function getEngineInfo() {
+    return {
+        name:
+            "NOVA DATA AI File Engine",
+
+        version:
+            CONFIG.VERSION,
+
+        status:
+            "ready",
+
+        supportedFormats:
+            getSupportedFormats(),
+
+        currentlyUnsupported: [
+            ".xlsx",
+            ".xls",
+            ".pdf",
+            ".docx",
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp",
+            ".mp3",
+            ".wav",
+            ".mp4",
+            ".mov",
+            ".zip"
+        ],
+
+        limits: {
+            maxFileBytes:
+                CONFIG.MAX_FILE_BYTES,
+
+            maxRecords:
+                CONFIG.MAX_RECORDS,
+
+            maxTextLength:
+                CONFIG.MAX_TEXT_LENGTH
+        }
+    };
+}
+
+/* ============================================================
+   تحويل الخطأ إلى صيغة API
+============================================================ */
+
+function serializeError(
+    error
+) {
+    if (
+        error instanceof
+        FileEngineError
+    ) {
+        return {
+            name:
+                error.name,
+
+            code:
+                error.code,
+
+            message:
+                error.message,
+
+            details:
+                error.details
+        };
+    }
+
+    return {
+        name:
+            error?.name ||
+            "Error",
+
+        code:
+            "UNKNOWN_ERROR",
+
+        message:
+            error?.message ||
+            "حدث خطأ غير معروف."
+    };
+}
+
+/* ============================================================
+   API
+============================================================ */
+
+const fileEngine =
+    Object.freeze({
+        version:
+            CONFIG.VERSION,
+
+        config:
+            CONFIG,
+
+        FileEngineError,
+
+        getExtension,
+
+        normalizeFileName,
+
+        normalizePath,
+
+        createHash,
+
+        assertFileExists,
+
+        validateFileSize,
+
+        validateExtension,
+
+        detectFileType,
+
+        readFileBuffer,
+
+        decodeTextBuffer,
+
+        parseText,
+
+        parseJSON,
+
+        parseJSONL,
+
+        parseCSV,
+
+        parseCSVLine,
+
+        looksLikeCSV,
+
+        normalizeRecord,
+
+        normalizeRecords,
+
+        isEmptyRecord,
+
+        removeEmptyRecords,
+
+        validateRecordCount,
+
+        analyzeFileMetadata,
+
+        inspectFile,
+
+        processFile,
+
+        processManyFiles,
+
+        mergeFileResults,
+
+        deduplicateRecords,
+
+        combineProcessedFiles,
+
+        createDatasetDraft,
+
+        fileChecksum,
+
+        getSupportedFormats,
+
+        getEngineInfo,
+
+        serializeError,
+
+        stableSerialize
+    });
+
+/* ============================================================
+   التصدير
+============================================================ */
+
+module.exports =
+    fileEngine;
+
+/* ============================================================
+   تشغيل مباشر للاختبار
+============================================================ */
+
+if (
+    require.main === module
+) {
+    console.log("");
+    console.log(
+        "=============================================="
+    );
+
+    console.log(
+        "       NOVA DATA AI - FILE ENGINE"
+    );
+
+    console.log(
+        "=============================================="
+    );
+
+    console.log(
+        `Version: ${CONFIG.VERSION}`
+    );
+
+    console.log(
+        "Status: READY"
+    );
+
+    console.log(
+        "Supported:"
+    );
+
+    console.log(
+        "TXT / JSON / JSONL / NDJSON / CSV"
+    );
+
+    console.log(
+        `Maximum file size: ${CONFIG.MAX_FILE_BYTES} bytes`
+    );
+
+    console.log(
+        `Maximum records: ${CONFIG.MAX_RECORDS}`
+    );
+
+    console.log(
+        "=============================================="
+    );
+
+    console.log("");
+}
