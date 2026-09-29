@@ -1,0 +1,28 @@
+{
+  "name": "nova-data-ai",
+  "version": "1.0.0",
+  "description": "NOVA DATA AI - منصة جمع وتنظيف وتحليل وتجهيز البيانات للذكاء الاصطناعي",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "ai",
+    "data",
+    "dataset",
+    "machine-learning",
+    "data-cleaning",
+    "data-validation",
+    "data-preparation",
+    "nova-data-ai"
+  ],
+  "author": "NOVA DATA AI",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
