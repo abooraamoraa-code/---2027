@@ -1,0 +1,4089 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="NOVA DATA AI - منصة جمع وتنظيف وتنظيم وتجهيز البيانات للذكاء الاصطناعي">
+    <meta name="theme-color" content="#080b14">
+
+    <title>NOVA DATA AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070a12;
+            --panel: #0d1220;
+            --panel2: #111827;
+            --border: rgba(255,255,255,.09);
+            --text: #f5f7fb;
+            --muted: #8e9aae;
+            --primary: #7c5cff;
+            --primary2: #5b8cff;
+            --success: #20d6a0;
+            --warning: #ffb84d;
+            --danger: #ff5c75;
+            --shadow: 0 20px 60px rgba(0,0,0,.28);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 85% 10%, rgba(124,92,255,.15), transparent 28%),
+                radial-gradient(circle at 10% 30%, rgba(91,140,255,.10), transparent 25%),
+                var(--bg);
+            color: var(--text);
+            font-family:
+                "Segoe UI",
+                Tahoma,
+                Arial,
+                sans-serif;
+            overflow-x: hidden;
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            width: 265px;
+            min-height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+            padding: 22px 16px;
+            background: rgba(9,13,23,.94);
+            border-left: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            overflow-y: auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 8px 24px;
+        }
+
+        .brand-logo {
+            width: 43px;
+            height: 43px;
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            background:
+                linear-gradient(135deg, var(--primary), var(--primary2));
+            box-shadow: 0 10px 30px rgba(124,92,255,.30);
+            font-weight: 900;
+            font-size: 18px;
+        }
+
+        .brand-text strong {
+            display: block;
+            font-size: 17px;
+            letter-spacing: .4px;
+        }
+
+        .brand-text span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .nav-title {
+            color: #68758a;
+            font-size: 10px;
+            font-weight: 800;
+            margin: 18px 10px 8px;
+            letter-spacing: 1px;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            border: 1px solid transparent;
+            background: transparent;
+            color: #aeb8c9;
+            border-radius: 11px;
+            padding: 12px 13px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-align: right;
+            transition: .2s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,.045);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(
+                135deg,
+                rgba(124,92,255,.18),
+                rgba(91,140,255,.08)
+            );
+            border-color: rgba(124,92,255,.20);
+            color: white;
+        }
+
+        .nav-icon {
+            width: 28px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .sidebar-footer {
+            margin-top: 25px;
+            padding: 14px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.025);
+            border-radius: 14px;
+        }
+
+        .status-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 12px rgba(32,214,160,.7);
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            width: calc(100% - 265px);
+            margin-right: 265px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 76px;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(7,10,18,.72);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(18px);
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-menu {
+            display: none;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 11px;
+        }
+
+        .page-title h1 {
+            font-size: 19px;
+        }
+
+        .page-title p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.025);
+            color: #d8dfeb;
+            display: grid;
+            place-items: center;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,.025);
+            border-radius: 12px;
+            padding: 6px 9px 6px 12px;
+        }
+
+        .avatar {
+            width: 31px;
+            height: 31px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #7c5cff, #4d9cff);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .user-pill span {
+            font-size: 12px;
+            color: #dfe5ef;
+        }
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .content {
+            padding: 30px;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn .25s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero {
+            padding: 34px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background:
+                radial-gradient(circle at 90% 10%, rgba(124,92,255,.17), transparent 30%),
+                linear-gradient(135deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
+            box-shadow: var(--shadow);
+            margin-bottom: 22px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 11px;
+            border: 1px solid rgba(124,92,255,.25);
+            background: rgba(124,92,255,.08);
+            color: #bcaeff;
+            border-radius: 999px;
+            font-size: 11px;
+            margin-bottom: 15px;
+        }
+
+        .hero h2 {
+            font-size: clamp(25px, 4vw, 42px);
+            line-height: 1.15;
+            max-width: 850px;
+            margin-bottom: 12px;
+        }
+
+        .hero h2 span {
+            background: linear-gradient(90deg, #9c87ff, #68a8ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            max-width: 760px;
+            color: var(--muted);
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 23px;
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 11px 17px;
+            color: white;
+            background: rgba(255,255,255,.035);
+            transition: .2s ease;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255,255,255,.17);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            border-color: transparent;
+            box-shadow: 0 10px 25px rgba(92,91,255,.20);
+        }
+
+        .btn-success {
+            background: rgba(32,214,160,.10);
+            border-color: rgba(32,214,160,.20);
+            color: #69edc4;
+        }
+
+        .btn-danger {
+            background: rgba(255,92,117,.08);
+            border-color: rgba(255,92,117,.20);
+            color: #ff8da0;
+        }
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .stat {
+            padding: 18px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            border-radius: 16px;
+        }
+
+        .stat-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-icon {
+            width: 37px;
+            height: 37px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: rgba(124,92,255,.09);
+            font-size: 17px;
+        }
+
+        .stat small {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 25px;
+            margin-top: 12px;
+        }
+
+        .stat .change {
+            font-size: 10px;
+            color: var(--success);
+            margin-top: 4px;
+        }
+
+        /* =========================
+           SOURCE CARDS
+        ========================= */
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 13px;
+        }
+
+        .section-heading h3 {
+            font-size: 17px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .source-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .source-card {
+            min-height: 145px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            border-radius: 16px;
+            padding: 18px;
+            text-align: right;
+            transition: .2s ease;
+        }
+
+        .source-card:hover {
+            border-color: rgba(124,92,255,.30);
+            transform: translateY(-2px);
+        }
+
+        .source-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: rgba(124,92,255,.09);
+            margin-bottom: 14px;
+            font-size: 20px;
+        }
+
+        .source-card strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .source-card span {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.6;
+            margin-top: 5px;
+        }
+
+        /* =========================
+           WORKSPACE
+        ========================= */
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .panel {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            border-radius: 17px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-header h3 {
+            font-size: 14px;
+        }
+
+        .panel-header span {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .panel-body {
+            padding: 18px;
+        }
+
+        .drop-zone {
+            min-height: 220px;
+            border: 1px dashed rgba(124,92,255,.35);
+            border-radius: 15px;
+            background: rgba(124,92,255,.035);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 25px;
+            transition: .2s ease;
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(124,92,255,.10);
+        }
+
+        .drop-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background: rgba(124,92,255,.12);
+            font-size: 25px;
+            margin-bottom: 12px;
+        }
+
+        .drop-zone strong {
+            font-size: 14px;
+        }
+
+        .drop-zone p {
+            color: var(--muted);
+            font-size: 11px;
+            margin: 7px 0 14px;
+        }
+
+        .url-box {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .input {
+            width: 100%;
+            background: #090e19;
+            color: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            padding: 11px 12px;
+            font-size: 12px;
+        }
+
+        .input:focus {
+            border-color: rgba(124,92,255,.55);
+        }
+
+        textarea.input {
+            min-height: 180px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           DATA TABLE
+        ========================= */
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            text-align: right;
+            font-size: 11px;
+        }
+
+        th {
+            color: #aeb8ca;
+            background: rgba(255,255,255,.018);
+            font-weight: 700;
+        }
+
+        td {
+            color: #d9dfeb;
+        }
+
+        .tag {
+            display: inline-flex;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 9px;
+            background: rgba(32,214,160,.08);
+            color: #66e8c0;
+            border: 1px solid rgba(32,214,160,.16);
+        }
+
+        .tag.warning {
+            background: rgba(255,184,77,.08);
+            color: #ffc970;
+            border-color: rgba(255,184,77,.16);
+        }
+
+        /* =========================
+           FORMS
+        ========================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 13px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            color: #b9c2d2;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        select.input {
+            appearance: auto;
+        }
+
+        /* =========================
+           QUALITY
+        ========================= */
+
+        .quality-card {
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--panel);
+        }
+
+        .quality-score {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        .score-circle {
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            position: relative;
+            background:
+                conic-gradient(
+                    var(--success) 0deg,
+                    var(--success) 0deg,
+                    rgba(255,255,255,.06) 0deg
+                );
+        }
+
+        .score-circle::after {
+            content: "";
+            position: absolute;
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            background: var(--panel);
+        }
+
+        .score-circle strong {
+            position: relative;
+            z-index: 2;
+            font-size: 22px;
+        }
+
+        .quality-bars {
+            display: grid;
+            gap: 11px;
+        }
+
+        .quality-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 45px;
+            gap: 10px;
+            align-items: center;
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .bar {
+            height: 7px;
+            border-radius: 99px;
+            overflow: hidden;
+            background: rgba(255,255,255,.06);
+        }
+
+        .bar span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            transition: width .5s ease;
+        }
+
+        /* =========================
+           EMPTY
+        ========================= */
+
+        .empty {
+            padding: 45px 20px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .empty strong {
+            display: block;
+            color: #dce3ef;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .empty p {
+            font-size: 11px;
+        }
+
+        /* =========================
+           TOAST
+        ========================= */
+
+        .toast-container {
+            position: fixed;
+            left: 22px;
+            bottom: 22px;
+            z-index: 1000;
+            display: grid;
+            gap: 9px;
+        }
+
+        .toast {
+            min-width: 270px;
+            max-width: 390px;
+            padding: 13px 15px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #111827;
+            box-shadow: var(--shadow);
+            color: #e9edf5;
+            font-size: 11px;
+            animation: toastIn .25s ease;
+        }
+
+        .toast.success {
+            border-color: rgba(32,214,160,.25);
+        }
+
+        .toast.error {
+            border-color: rgba(255,92,117,.25);
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0,0,0,.68);
+            backdrop-filter: blur(7px);
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-box {
+            width: min(620px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #0d1320;
+            border: 1px solid var(--border);
+            border-radius: 19px;
+            box-shadow: 0 30px 100px rgba(0,0,0,.5);
+        }
+
+        .modal-header {
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header strong {
+            font-size: 15px;
+        }
+
+        .close {
+            width: 33px;
+            height: 33px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: transparent;
+            color: white;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1150px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .source-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 850px) {
+            .sidebar {
+                transform: translateX(100%);
+                transition: transform .25s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                width: 100%;
+                margin-right: 0;
+            }
+
+            .mobile-menu {
+                display: grid;
+                place-items: center;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .user-pill span {
+                display: none;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .stats,
+            .source-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 23px;
+            }
+
+            .hero h2 {
+                font-size: 26px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .quality-score {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .quality-row {
+                grid-template-columns: 80px 1fr 38px;
+            }
+
+            .top-actions .icon-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <div class="brand-logo">N</div>
+
+            <div class="brand-text">
+                <strong>NOVA DATA AI</strong>
+                <span>Data Intelligence Platform</span>
+            </div>
+        </div>
+
+        <div class="nav-title">الرئيسية</div>
+
+        <nav class="nav">
+
+            <button class="nav-btn active" data-section="dashboard">
+                <span class="nav-icon">⌂</span>
+                <span>لوحة التحكم</span>
+            </button>
+
+            <button class="nav-btn" data-section="collect">
+                <span class="nav-icon">📥</span>
+                <span>جمع البيانات</span>
+            </button>
+
+            <button class="nav-btn" data-section="datasets">
+                <span class="nav-icon">🗃️</span>
+                <span>مجموعات البيانات</span>
+            </button>
+
+            <button class="nav-btn" data-section="quality">
+                <span class="nav-icon">🔍</span>
+                <span>جودة البيانات</span>
+            </button>
+
+            <button class="nav-btn" data-section="clean">
+                <span class="nav-icon">🧹</span>
+                <span>تنظيف وتنظيم</span>
+            </button>
+
+            <button class="nav-btn" data-section="training">
+                <span class="nav-icon">🧠</span>
+                <span>تجهيز التدريب</span>
+            </button>
+
+        </nav>
+
+        <div class="nav-title">الإدارة</div>
+
+        <nav class="nav">
+
+            <button class="nav-btn" data-section="projects">
+                <span class="nav-icon">📁</span>
+                <span>المشاريع</span>
+            </button>
+
+            <button class="nav-btn" data-section="exports">
+                <span class="nav-icon">📦</span>
+                <span>التصدير</span>
+            </button>
+
+            <button class="nav-btn" data-section="market">
+                <span class="nav-icon">🛒</span>
+                <span>سوق البيانات</span>
+            </button>
+
+            <button class="nav-btn" data-section="settings">
+                <span class="nav-icon">⚙️</span>
+                <span>الإعدادات</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="status-line">
+                <span>حالة النظام</span>
+                <span class="status-dot"></span>
+            </div>
+
+            <div style="margin-top:7px;color:#cdd5e2;font-size:11px;">
+                النظام جاهز للعمل
+            </div>
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="page-title">
+
+                <button class="mobile-menu" id="mobileMenu">
+                    ☰
+                </button>
+
+                <div>
+                    <h1 id="pageTitle">لوحة التحكم</h1>
+                    <p id="pageSubtitle">
+                        إدارة وتجهيز بياناتك من مكان واحد
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="top-actions">
+
+                <button class="icon-btn" id="notificationBtn" title="الإشعارات">
+                    🔔
+                </button>
+
+                <div class="user-pill">
+                    <div class="avatar">N</div>
+                    <span>مستخدم NOVA</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div class="content">
+
+            <!-- =========================
+                 DASHBOARD
+            ========================== -->
+
+            <section class="section active" id="section-dashboard">
+
+                <div class="hero">
+
+                    <div class="hero-badge">
+                        <span>●</span>
+                        منصة البيانات الذكية
+                    </div>
+
+                    <h2>
+                        اجمع بياناتك،
+                        <span>نظفها ونظمها وجهزها للذكاء الاصطناعي.</span>
+                    </h2>
+
+                    <p>
+                        منصة واحدة لاستقبال البيانات من الملفات والروابط والمصادر
+                        المسموح بها، ثم تحليلها وتنظيفها والتحقق من جودتها
+                        وتجهيزها لمشاريع الذكاء الاصطناعي.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <button class="btn btn-primary" id="startCollectBtn">
+                            🚀 ابدأ جمع البيانات
+                        </button>
+
+                        <button class="btn" id="manualDataBtn">
+                            ✍️ إدخال بيانات
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stats">
+
+                    <div class="stat">
+                        <div class="stat-head">
+                            <small>مجموعات البيانات</small>
+                            <div class="stat-icon">🗃️</div>
+                        </div>
+
+                        <strong id="datasetsCount">0</strong>
+
+                        <div class="change">
+                            جاهز للاستخدام
+                        </div>
+                    </div>
+
+
+                    <div class="stat">
+                        <div class="stat-head">
+                            <small>السجلات</small>
+                            <div class="stat-icon">📊</div>
+                        </div>
+
+                        <strong id="recordsCount">0</strong>
+
+                        <div class="change">
+                            بيانات مستوردة
+                        </div>
+                    </div>
+
+
+                    <div class="stat">
+                        <div class="stat-head">
+                            <small>جودة البيانات</small>
+                            <div class="stat-icon">✓</div>
+                        </div>
+
+                        <strong id="qualityCount">—</strong>
+
+                        <div class="change">
+                            سيتم حسابها بعد التحليل
+                        </div>
+                    </div>
+
+
+                    <div class="stat">
+                        <div class="stat-head">
+                            <small>المشاريع</small>
+                            <div class="stat-icon">📁</div>
+                        </div>
+
+                        <strong id="projectsCount">0</strong>
+
+                        <div class="change">
+                            مشاريع البيانات
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="section-heading">
+                    <div>
+                        <h3>مصادر البيانات</h3>
+                        <p>اختر الطريقة المناسبة لإضافة البيانات إلى المنصة</p>
+                    </div>
+                </div>
+
+
+                <div class="source-grid">
+
+                    <button class="source-card" data-source="file">
+                        <div class="source-icon">📁</div>
+                        <strong>رفع ملفات</strong>
+                        <span>
+                            CSV, JSON, TXT, XLSX والأنواع التي يدعمها النظام.
+                        </span>
+                    </button>
+
+
+                    <button class="source-card" data-source="url">
+                        <div class="source-icon">🔗</div>
+                        <strong>رابط</strong>
+                        <span>
+                            إدخال رابط لمصدر أو ملف أو API مسموح باستخدامه.
+                        </span>
+                    </button>
+
+
+                    <button class="source-card" data-source="project">
+                        <div class="source-icon">💻</div>
+                        <strong>مشروع</strong>
+                        <span>
+                            تحليل مصدر مشروع وإدخال البيانات القابلة للاستخدام.
+                        </span>
+                    </button>
+
+
+                    <button class="source-card" data-source="manual">
+                        <div class="source-icon">✍️</div>
+                        <strong>إدخال يدوي</strong>
+                        <span>
+                            إنشاء Dataset وإدخال السجلات مباشرة.
+                        </span>
+                    </button>
+
+                </div>
+
+
+                <div class="workspace">
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <div>
+                                <h3>آخر البيانات</h3>
+                            </div>
+
+                            <span>آخر النشاطات</span>
+                        </div>
+
+                        <div id="recentData">
+                            <div class="empty">
+                                <div class="empty-icon">📦</div>
+                                <strong>لا توجد بيانات بعد</strong>
+                                <p>
+                                    أضف أول مصدر بيانات ليظهر هنا.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <div>
+                                <h3>حالة المعالجة</h3>
+                            </div>
+
+                            <span id="processingStatus">جاهز</span>
+                        </div>
+
+                        <div class="panel-body">
+
+                            <div class="quality-bars">
+
+                                <div class="quality-row">
+                                    <span>جمع البيانات</span>
+                                    <div class="bar">
+                                        <span id="barCollect"></span>
+                                    </div>
+                                    <b id="valueCollect">0%</b>
+                                </div>
+
+                                <div class="quality-row">
+                                    <span>التنظيف</span>
+                                    <div class="bar">
+                                        <span id="barClean"></span>
+                                    </div>
+                                    <b id="valueClean">0%</b>
+                                </div>
+
+                                <div class="quality-row">
+                                    <span>التحقق</span>
+                                    <div class="bar">
+                                        <span id="barValidate"></span>
+                                    </div>
+                                    <b id="valueValidate">0%</b>
+                                </div>
+
+                                <div class="quality-row">
+                                    <span>التجهيز</span>
+                                    <div class="bar">
+                                        <span id="barPrepare"></span>
+                                    </div>
+                                    <b id="valuePrepare">0%</b>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 COLLECT
+            ========================== -->
+
+            <section class="section" id="section-collect">
+
+                <div class="section-heading">
+                    <div>
+                        <h3>جمع البيانات</h3>
+                        <p>
+                            أضف البيانات من مصدر مناسب
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="workspace">
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <h3>رفع ملفات</h3>
+                            <span>استيراد</span>
+                        </div>
+
+                        <div class="panel-body">
+
+                            <div
+                                class="drop-zone"
+                                id="dropZone"
+                            >
+
+                                <div class="drop-icon">
+                                    📤
+                                </div>
+
+                                <strong>
+                                    اسحب الملفات إلى هنا
+                                </strong>
+
+                                <p>
+                                    أو اختر الملفات من جهازك
+                                </p>
+
+                                <button
+                                    class="btn btn-primary"
+                                    id="chooseFilesBtn"
+                                >
+                                    اختيار الملفات
+                                </button>
+
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    hidden
+                                    multiple
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="panel-header">
+                            <h3>إضافة مصدر</h3>
+                            <span>رابط / API</span>
+                        </div>
+
+                        <div class="panel-body">
+
+                            <div class="field">
+
+                                <label>
+                                    رابط المصدر
+                                </label>
+
+                                <input
+                                    class="input"
+                                    id="sourceUrl"
+                                    type="url"
+                                    placeholder="https://example.com/data"
+                                >
+
+                            </div>
+
+                            <br>
+
+                            <div class="field">
+
+                                <label>
+                                    نوع المصدر
+                                </label>
+
+                                <select class="input" id="sourceType">
+
+                                    <option value="web">
+                                        موقع / صفحة ويب
+                                    </option>
+
+                                    <option value="api">
+                                        API
+                                    </option>
+
+                                    <option value="file">
+                                        ملف مباشر
+                                    </option>
+
+                                    <option value="project">
+                                        مشروع
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <br>
+
+                            <button
+                                class="btn btn-primary"
+                                id="addSourceBtn"
+                            >
+                                إضافة المصدر
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel" style="margin-top:15px;">
+
+                    <div class="panel-header">
+                        <h3>إدخال بيانات يدوي</h3>
+                        <span>Dataset جديد</span>
+                    </div>
+
+                    <div class="panel-body">
+
+                        <div class="form-grid">
+
+                            <div class="field">
+                                <label>اسم Dataset</label>
+
+                                <input
+                                    class="input"
+                                    id="datasetName"
+                                    placeholder="مثال: Arabic Text Dataset"
+                                >
+                            </div>
+
+                            <div class="field">
+                                <label>نوع البيانات</label>
+
+                                <select
+                                    class="input"
+                                    id="datasetType"
+                                >
+                                    <option value="text">نصوص</option>
+                                    <option value="tabular">جداول</option>
+                                    <option value="image">صور</option>
+                                    <option value="audio">صوت</option>
+                                    <option value="video">فيديو</option>
+                                    <option value="mixed">مختلطة</option>
+                                </select>
+
+                            </div>
+
+                            <div class="field full">
+
+                                <label>
+                                    البيانات
+                                </label>
+
+                                <textarea
+                                    class="input"
+                                    id="manualData"
+                                    placeholder="أدخل البيانات هنا..."
+                                ></textarea>
+
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <button
+                            class="btn btn-primary"
+                            id="createDatasetBtn"
+                        >
+                            إنشاء Dataset
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 DATASETS
+            ========================== -->
+
+            <section class="section" id="section-datasets">
+
+                <div class="section-heading">
+                    <div>
+                        <h3>مجموعات البيانات</h3>
+                        <p>
+                            جميع مجموعات البيانات التي أنشأتها
+                        </p>
+                    </div>
+
+                    <button
+                        class="btn btn-primary"
+                        id="newDatasetBtn"
+                    >
+                        + Dataset جديد
+                    </button>
+                </div>
+
+
+                <div class="panel">
+
+                    <div id="datasetsTableContainer">
+
+                        <div class="empty">
+
+                            <div class="empty-icon">
+                                🗃️
+                            </div>
+
+                            <strong>
+                                لا توجد مجموعات بيانات
+                            </strong>
+
+                            <p>
+                                أنشئ أول Dataset من قسم جمع البيانات.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 QUALITY
+            ========================== -->
+
+            <section class="section" id="section-quality">
+
+                <div class="section-heading">
+                    <div>
+                        <h3>جودة البيانات</h3>
+                        <p>
+                            تحليل جودة Dataset واكتشاف المشاكل
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="quality-card">
+
+                    <div class="quality-score">
+
+                        <div
+                            class="score-circle"
+                            id="scoreCircle"
+                        >
+                            <strong id="scoreValue">
+                                —
+                            </strong>
+                        </div>
+
+                        <div>
+                            <h3>درجة جودة البيانات</h3>
+
+                            <p style="color:var(--muted);font-size:11px;line-height:1.8;margin-top:6px;">
+                                سيتم حساب النتيجة اعتمادًا على
+                                الاكتمال والتكرار وصحة التنسيق
+                                ومشاكل البيانات المكتشفة.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="quality-bars">
+
+                        <div class="quality-row">
+                            <span>الاكتمال</span>
+
+                            <div class="bar">
+                                <span id="qualityCompleteness"></span>
+                            </div>
+
+                            <b id="qualityCompletenessValue">
+                                —
+                            </b>
+                        </div>
+
+
+                        <div class="quality-row">
+                            <span>عدم التكرار</span>
+
+                            <div class="bar">
+                                <span id="qualityUniqueness"></span>
+                            </div>
+
+                            <b id="qualityUniquenessValue">
+                                —
+                            </b>
+                        </div>
+
+
+                        <div class="quality-row">
+                            <span>التنسيق</span>
+
+                            <div class="bar">
+                                <span id="qualityFormat"></span>
+                            </div>
+
+                            <b id="qualityFormatValue">
+                                —
+                            </b>
+                        </div>
+
+
+                        <div class="quality-row">
+                            <span>الصحة</span>
+
+                            <div class="bar">
+                                <span id="qualityValidity"></span>
+                            </div>
+
+                            <b id="qualityValidityValue">
+                                —
+                            </b>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 CLEAN
+            ========================== -->
+
+            <section class="section" id="section-clean">
+
+                <div class="section-heading">
+                    <div>
+                        <h3>تنظيف وتنظيم البيانات</h3>
+
+                        <p>
+                            أدوات تجهيز البيانات قبل استخدامها
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="source-grid">
+
+                    <button class="source-card" data-action="duplicates">
+                        <div class="source-icon">♻️</div>
+
+                        <strong>
+                            إزالة التكرار
+                        </strong>
+
+                        <span>
+                            اكتشاف السجلات المتكررة والمتشابهة.
+                        </span>
+                    </button>
+
+
+                    <button class="source-card" data-action="missing">
+                        <div class="source-icon">🩹</div>
+
+                        <strong>
+                            معالجة النواقص
+                        </strong>
+
+                        <span>
+                            اكتشاف القيم الفارغة والمفقودة.
+                        </span>
+                    </button>
+
+
+                    <button class="source-card" data-action="normalize">
+                        <div class="source-icon">🔄</div>
+
+                        <strong>
+                            توحيد البيانات
+                        </strong>
+
+                        <span>
+                            توحيد الصيغ والتنسيقات والقيم.
+                        </span>
+                    </button>
+
+
+                    <button class="source-card" data-action="validate">
+                        <div class="source-icon">🔎</div>
+
+                        <strong>
+                            التحقق
+                        </strong>
+
+                        <span>
+                            البحث عن القيم غير الصحيحة والمشاكل.
+                        </span>
+                    </button>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>سجل عمليات التنظيف</h3>
+                        <span id="cleanOperationsCount">0 عملية</span>
+                    </div>
+
+                    <div id="cleanLog">
+
+                        <div class="empty">
+                            <div class="empty-icon">🧹</div>
+
+                            <strong>
+                                لم يتم تشغيل عمليات تنظيف
+                            </strong>
+
+                            <p>
+                                عند معالجة Dataset ستظهر العمليات هنا.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 TRAINING
+            ========================== -->
+
+            <section class="section" id="section-training">
+
+                <div class="section-heading">
+                    <div>
+                        <h3>تجهيز بيانات التدريب</h3>
+
+                        <p>
+                            تحويل البيانات إلى صيغة مناسبة للنموذج
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-body">
+
+                        <div class="form-grid">
+
+                            <div class="field">
+
+                                <label>
+                                    نوع النموذج
+                                </label>
+
+                                <select
+                                    class="input"
+                                    id="trainingModel"
+                                >
+
+                                    <option value="llm">
+                                        نموذج لغوي LLM
+                                    </option>
+
+                                    <option value="classification">
+                                        تصنيف
+                                    </option>
+
+                                    <option value="vision">
+                                        رؤية حاسوبية
+                                    </option>
+
+                                    <option value="speech">
+                                        صوت
+                                    </option>
+
+                                    <option value="embedding">
+                                        Embeddings
+                                    </option>
+
+                                    <option value="custom">
+                                        مخصص
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    صيغة التصدير
+                                </label>
+
+                                <select
+                                    class="input"
+                                    id="trainingFormat"
+                                >
+
+                                    <option value="jsonl">
+                                        JSONL
+                                    </option>
+
+                                    <option value="json">
+                                        JSON
+                                    </option>
+
+                                    <option value="csv">
+                                        CSV
+                                    </option>
+
+                                    <option value="parquet">
+                                        Parquet
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <button
+                            class="btn btn-primary"
+                            id="prepareTrainingBtn"
+                        >
+                            🧠 تجهيز Dataset للتدريب
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 PROJECTS
+            ========================== -->
+
+            <section class="section" id="section-projects">
+
+                <div class="section-heading">
+
+                    <div>
+                        <h3>المشاريع</h3>
+
+                        <p>
+                            تنظيم مجموعات البيانات حسب المشروع
+                        </p>
+                    </div>
+
+                    <button
+                        class="btn btn-primary"
+                        id="newProjectBtn"
+                    >
+                        + مشروع جديد
+                    </button>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            📁
+                        </div>
+
+                        <strong>
+                            لا توجد مشاريع
+                        </strong>
+
+                        <p>
+                            أنشئ مشروعًا لتنظيم بياناتك.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 EXPORTS
+            ========================== -->
+
+            <section class="section" id="section-exports">
+
+                <div class="section-heading">
+
+                    <div>
+                        <h3>التصدير</h3>
+
+                        <p>
+                            تجهيز الملفات للاستخدام الخارجي
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            📦
+                        </div>
+
+                        <strong>
+                            لا توجد عمليات تصدير
+                        </strong>
+
+                        <p>
+                            بعد تجهيز Dataset ستظهر خيارات التصدير هنا.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 MARKET
+            ========================== -->
+
+            <section class="section" id="section-market">
+
+                <div class="hero">
+
+                    <div class="hero-badge">
+                        🛒 Data Marketplace
+                    </div>
+
+                    <h2>
+                        سوق مجموعات البيانات
+                    </h2>
+
+                    <p>
+                        مساحة مستقبلية لعرض مجموعات البيانات
+                        التي يملك المستخدم حق توزيعها وبيعها،
+                        مع معلومات الجودة والترخيص والاستخدام.
+                    </p>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="empty">
+
+                        <div class="empty-icon">
+                            🛒
+                        </div>
+
+                        <strong>
+                            السوق غير مفعل بعد
+                        </strong>
+
+                        <p>
+                            سيتم ربطه بنظام البيع بعد بناء نظام البيانات الأساسي.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 SETTINGS
+            ========================== -->
+
+            <section class="section" id="section-settings">
+
+                <div class="section-heading">
+
+                    <div>
+                        <h3>الإعدادات</h3>
+
+                        <p>
+                            إعدادات المنصة
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-body">
+
+                        <div class="form-grid">
+
+                            <div class="field">
+
+                                <label>
+                                    اسم المنصة
+                                </label>
+
+                                <input
+                                    class="input"
+                                    value="NOVA DATA AI"
+                                    id="platformName"
+                                >
+
+                            </div>
+
+
+                            <div class="field">
+
+                                <label>
+                                    لغة الواجهة
+                                </label>
+
+                                <select class="input">
+
+                                    <option selected>
+                                        العربية
+                                    </option>
+
+                                    <option>
+                                        English
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="field full">
+
+                                <label>
+                                    مستوى فحص البيانات
+                                </label>
+
+                                <select class="input" id="validationLevel">
+
+                                    <option value="standard">
+                                        قياسي
+                                    </option>
+
+                                    <option value="strict" selected>
+                                        صارم
+                                    </option>
+
+                                    <option value="maximum">
+                                        أقصى تحقق ممكن
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <br>
+
+                        <button
+                            class="btn btn-success"
+                            id="saveSettingsBtn"
+                        >
+                            حفظ الإعدادات
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================
+     TOASTS
+========================== -->
+
+<div
+    class="toast-container"
+    id="toastContainer"
+></div>
+
+
+<!-- =========================
+     MODAL
+========================== -->
+
+<div
+    class="modal"
+    id="modal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <strong id="modalTitle">
+                NOVA DATA AI
+            </strong>
+
+            <button
+                class="close"
+                id="closeModal"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            class="modal-body"
+            id="modalBody"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<script>
+/*
+===========================================================
+NOVA DATA AI
+CORE FRONTEND CONTROLLER
+===========================================================
+
+هذا الملف مسؤول عن:
+- التحكم بالواجهة
+- التنقل بين الأقسام
+- استقبال الملفات من الواجهة
+- استقبال الروابط
+- الإدخال اليدوي
+- حفظ حالة الواجهة مؤقتًا
+- تجهيز الطلبات للطبقة الخلفية
+
+المعالجة الحقيقية للبيانات ستكون في ملفات النظام الخلفية.
+لا يتم الادعاء هنا بأن البيانات تمت معالجتها فعليًا.
+===========================================================
+*/
+
+(function () {
+
+    "use strict";
+
+
+    /* =====================================================
+       STATE
+    ===================================================== */
+
+    const state = {
+
+        currentSection: "dashboard",
+
+        datasets: [],
+
+        projects: [],
+
+        importedFiles: [],
+
+        sources: [],
+
+        cleaningOperations: [],
+
+        settings: {
+            platformName: "NOVA DATA AI",
+            language: "ar",
+            validationLevel: "strict"
+        },
+
+        processing: {
+            collect: 0,
+            clean: 0,
+            validate: 0,
+            prepare: 0
+        }
+
+    };
+
+
+    /* =====================================================
+       ELEMENT HELPERS
+    ===================================================== */
+
+    const $ = (selector) => document.querySelector(selector);
+
+    const $$ = (selector) =>
+        Array.from(document.querySelectorAll(selector));
+
+
+    /* =====================================================
+       STORAGE
+    ===================================================== */
+
+    const STORAGE_KEY = "nova_data_ai_state_v1";
+
+
+    function saveState() {
+
+        try {
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(state)
+            );
+
+        } catch (error) {
+
+            console.warn(
+                "تعذر حفظ حالة التطبيق:",
+                error
+            );
+
+        }
+
+    }
+
+
+    function loadState() {
+
+        try {
+
+            const saved =
+                localStorage.getItem(STORAGE_KEY);
+
+            if (!saved) {
+                return;
+            }
+
+            const parsed =
+                JSON.parse(saved);
+
+            if (
+                parsed &&
+                typeof parsed === "object"
+            ) {
+
+                Object.assign(
+                    state,
+                    parsed
+                );
+
+                if (
+                    parsed.settings
+                ) {
+
+                    Object.assign(
+                        state.settings,
+                        parsed.settings
+                    );
+
+                }
+
+                if (
+                    parsed.processing
+                ) {
+
+                    Object.assign(
+                        state.processing,
+                        parsed.processing
+                    );
+
+                }
+
+            }
+
+        } catch (error) {
+
+            console.warn(
+                "تعذر تحميل حالة التطبيق:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       TOAST
+    ===================================================== */
+
+    function showToast(
+        message,
+        type = "success"
+    ) {
+
+        const container =
+            $("#toastContainer");
+
+        const toast =
+            document.createElement("div");
+
+        toast.className =
+            "toast " + type;
+
+        toast.textContent =
+            message;
+
+        container.appendChild(
+            toast
+        );
+
+        setTimeout(
+            () => {
+
+                toast.style.opacity = "0";
+
+                toast.style.transform =
+                    "translateY(8px)";
+
+                setTimeout(
+                    () => toast.remove(),
+                    250
+                );
+
+            },
+            3200
+        );
+
+    }
+
+
+    /* =====================================================
+       MODAL
+    ===================================================== */
+
+    function openModal(
+        title,
+        html
+    ) {
+
+        $("#modalTitle").textContent =
+            title;
+
+        $("#modalBody").innerHTML =
+            html;
+
+        $("#modal").classList.add(
+            "open"
+        );
+
+    }
+
+
+    function closeModal() {
+
+        $("#modal").classList.remove(
+            "open"
+        );
+
+    }
+
+
+    $("#closeModal")
+        .addEventListener(
+            "click",
+            closeModal
+        );
+
+
+    $("#modal")
+        .addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    $("#modal")
+                ) {
+
+                    closeModal();
+
+                }
+
+            }
+        );
+
+
+    /* =====================================================
+       NAVIGATION
+    ===================================================== */
+
+    const sectionTitles = {
+
+        dashboard: [
+            "لوحة التحكم",
+            "إدارة وتجهيز بياناتك من مكان واحد"
+        ],
+
+        collect: [
+            "جمع البيانات",
+            "إضافة البيانات من مصادر مختلفة"
+        ],
+
+        datasets: [
+            "مجموعات البيانات",
+            "إدارة مجموعات البيانات"
+        ],
+
+        quality: [
+            "جودة البيانات",
+            "تحليل واكتشاف مشاكل البيانات"
+        ],
+
+        clean: [
+            "تنظيف وتنظيم",
+            "تنظيف البيانات وتجهيزها"
+        ],
+
+        training: [
+            "تجهيز التدريب",
+            "إعداد البيانات للنماذج"
+        ],
+
+        projects: [
+            "المشاريع",
+            "تنظيم العمل ومصادر البيانات"
+        ],
+
+        exports: [
+            "التصدير",
+            "تصدير مجموعات البيانات"
+        ],
+
+        market: [
+            "سوق البيانات",
+            "إدارة مجموعات البيانات القابلة للتوزيع"
+        ],
+
+        settings: [
+            "الإعدادات",
+            "إعدادات المنصة"
+        ]
+
+    };
+
+
+    function navigate(
+        sectionName
+    ) {
+
+        if (
+            !sectionTitles[
+                sectionName
+            ]
+        ) {
+            return;
+        }
+
+
+        state.currentSection =
+            sectionName;
+
+
+        $$(".nav-btn")
+            .forEach(
+                button => {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.section ===
+                        sectionName
+                    );
+
+                }
+            );
+
+
+        $$(".section")
+            .forEach(
+                section => {
+
+                    section.classList.toggle(
+                        "active",
+                        section.id ===
+                        "section-" +
+                        sectionName
+                    );
+
+                }
+            );
+
+
+        const title =
+            sectionTitles[
+                sectionName
+            ];
+
+        $("#pageTitle").textContent =
+            title[0];
+
+        $("#pageSubtitle").textContent =
+            title[1];
+
+
+        $("#sidebar")
+            .classList.remove(
+                "open"
+            );
+
+
+        saveState();
+
+    }
+
+
+    $$(".nav-btn")
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => navigate(
+                        button.dataset.section
+                    )
+                );
+
+            }
+        );
+
+
+    $("#mobileMenu")
+        .addEventListener(
+            "click",
+            () => {
+
+                $("#sidebar")
+                    .classList.toggle(
+                        "open"
+                    );
+
+            }
+        );
+
+
+    /* =====================================================
+       PROCESSING INDICATORS
+    ===================================================== */
+
+    function setProcessing(
+        key,
+        value
+    ) {
+
+        value =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    Number(value) || 0
+                )
+            );
+
+        state.processing[key] =
+            value;
+
+
+        const bar =
+            $("#bar" +
+                key.charAt(0).toUpperCase() +
+                key.slice(1)
+            );
+
+        const label =
+            $("#value" +
+                key.charAt(0).toUpperCase() +
+                key.slice(1)
+            );
+
+
+        if (bar) {
+            bar.style.width =
+                value + "%";
+        }
+
+        if (label) {
+            label.textContent =
+                value + "%";
+        }
+
+    }
+
+
+    function refreshProcessing() {
+
+        Object.entries(
+            state.processing
+        ).forEach(
+            ([key, value]) => {
+
+                setProcessing(
+                    key,
+                    value
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       DASHBOARD STATS
+    ===================================================== */
+
+    function updateStats() {
+
+        $("#datasetsCount")
+            .textContent =
+            state.datasets.length;
+
+
+        const records =
+            state.datasets.reduce(
+                (
+                    total,
+                    dataset
+                ) =>
+                    total +
+                    Number(
+                        dataset.records || 0
+                    ),
+                0
+            );
+
+
+        $("#recordsCount")
+            .textContent =
+            formatNumber(
+                records
+            );
+
+
+        $("#projectsCount")
+            .textContent =
+            state.projects.length;
+
+    }
+
+
+    function formatNumber(
+        number
+    ) {
+
+        return new Intl.NumberFormat(
+            "ar"
+        ).format(
+            Number(number) || 0
+        );
+
+    }
+
+
+    /* =====================================================
+       FILE HANDLING
+    ===================================================== */
+
+    const fileInput =
+        $("#fileInput");
+
+    const dropZone =
+        $("#dropZone");
+
+
+    $("#chooseFilesBtn")
+        .addEventListener(
+            "click",
+            () => fileInput.click()
+        );
+
+
+    fileInput
+        .addEventListener(
+            "change",
+            event => {
+
+                handleFiles(
+                    Array.from(
+                        event.target.files
+                    )
+                );
+
+                fileInput.value = "";
+
+            }
+        );
+
+
+    [
+        "dragenter",
+        "dragover"
+    ].forEach(
+        eventName => {
+
+            dropZone.addEventListener(
+                eventName,
+                event => {
+
+                    event.preventDefault();
+
+                    dropZone.classList.add(
+                        "dragover"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    [
+        "dragleave",
+        "drop"
+    ].forEach(
+        eventName => {
+
+            dropZone.addEventListener(
+                eventName,
+                event => {
+
+                    event.preventDefault();
+
+                    dropZone.classList.remove(
+                        "dragover"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    dropZone
+        .addEventListener(
+            "drop",
+            event => {
+
+                const files =
+                    Array.from(
+                        event.dataTransfer.files
+                    );
+
+                handleFiles(files);
+
+            }
+        );
+
+
+    function handleFiles(
+        files
+    ) {
+
+        if (!files.length) {
+            return;
+        }
+
+
+        files.forEach(
+            file => {
+
+                state.importedFiles.push({
+
+                    id:
+                        createId(),
+
+                    name:
+                        file.name,
+
+                    size:
+                        file.size,
+
+                    type:
+                        file.type ||
+                        "unknown",
+
+                    lastModified:
+                        file.lastModified,
+
+                    addedAt:
+                        new Date()
+                            .toISOString()
+
+                });
+
+            }
+        );
+
+
+        setProcessing(
+            "collect",
+            100
+        );
+
+
+        saveState();
+
+        renderRecentData();
+
+        updateStats();
+
+
+        showToast(
+            `تم استلام ${files.length} ملف. سيتم تحليل المحتوى فعليًا عبر محرك المعالجة.`
+        );
+
+    }
+
+
+    /* =====================================================
+       SOURCE URL
+    ===================================================== */
+
+    $("#addSourceBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                const input =
+                    $("#sourceUrl");
+
+                const url =
+                    input.value.trim();
+
+                const type =
+                    $("#sourceType").value;
+
+
+                if (!url) {
+
+                    showToast(
+                        "أدخل رابط المصدر أولًا.",
+                        "error"
+                    );
+
+                    input.focus();
+
+                    return;
+
+                }
+
+
+                try {
+
+                    new URL(url);
+
+                } catch {
+
+                    showToast(
+                        "الرابط غير صالح.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                state.sources.push({
+
+                    id:
+                        createId(),
+
+                    url,
+
+                    type,
+
+                    addedAt:
+                        new Date()
+                            .toISOString()
+
+                });
+
+
+                saveState();
+
+                input.value = "";
+
+                setProcessing(
+                    "collect",
+                    100
+                );
+
+                renderRecentData();
+
+                showToast(
+                    "تم تسجيل المصدر بنجاح."
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       MANUAL DATASET
+    ===================================================== */
+
+    $("#createDatasetBtn")
+        .addEventListener(
+            "click",
+            createManualDataset
+        );
+
+
+    function createManualDataset() {
+
+        const name =
+            $("#datasetName")
+                .value
+                .trim();
+
+        const type =
+            $("#datasetType")
+                .value;
+
+        const data =
+            $("#manualData")
+                .value
+                .trim();
+
+
+        if (!name) {
+
+            showToast(
+                "أدخل اسم Dataset.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (!data) {
+
+            showToast(
+                "أدخل بعض البيانات أولًا.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const records =
+            countRecords(
+                data
+            );
+
+
+        const dataset = {
+
+            id:
+                createId(),
+
+            name,
+
+            type,
+
+            records,
+
+            status:
+                "raw",
+
+            quality:
+                null,
+
+            createdAt:
+                new Date()
+                    .toISOString(),
+
+            source:
+                "manual"
+
+        };
+
+
+        state.datasets.push(
+            dataset
+        );
+
+
+        setProcessing(
+            "collect",
+            100
+        );
+
+        setProcessing(
+            "clean",
+            0
+        );
+
+        setProcessing(
+            "validate",
+            0
+        );
+
+        setProcessing(
+            "prepare",
+            0
+        );
+
+
+        saveState();
+
+        updateStats();
+
+        renderDatasets();
+
+        renderRecentData();
+
+
+        $("#datasetName").value = "";
+
+        $("#manualData").value = "";
+
+
+        showToast(
+            `تم إنشاء Dataset "${name}" مبدئيًا بعدد ${formatNumber(records)} سجل.`
+        );
+
+
+        navigate(
+            "datasets"
+        );
+
+    }
+
+
+    function countRecords(
+        text
+    ) {
+
+        if (!text) {
+            return 0;
+        }
+
+
+        const lines =
+            text
+                .split(/\r?\n/)
+                .map(
+                    line => line.trim()
+                )
+                .filter(Boolean);
+
+
+        return lines.length;
+
+    }
+
+
+    /* =====================================================
+       DATASET RENDER
+    ===================================================== */
+
+    function renderDatasets() {
+
+        const container =
+            $("#datasetsTableContainer");
+
+
+        if (!state.datasets.length) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">🗃️</div>
+                    <strong>لا توجد مجموعات بيانات</strong>
+                    <p>أنشئ أول Dataset من قسم جمع البيانات.</p>
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        let rows = "";
+
+
+        state.datasets.forEach(
+            dataset => {
+
+                const quality =
+                    dataset.quality === null
+                        ? "لم يفحص"
+                        : dataset.quality + "%";
+
+
+                rows += `
+                    <tr>
+                        <td>${escapeHtml(dataset.name)}</td>
+                        <td>${escapeHtml(dataset.type)}</td>
+                        <td>${formatNumber(dataset.records)}</td>
+                        <td>
+                            <span class="tag">
+                                ${escapeHtml(dataset.status)}
+                            </span>
+                        </td>
+                        <td>${escapeHtml(quality)}</td>
+                        <td>
+                            <button
+                                class="btn"
+                                data-dataset-id="${dataset.id}"
+                                data-dataset-action="analyze"
+                            >
+                                تحليل
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+            }
+        );
+
+
+        container.innerHTML = `
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>النوع</th>
+                            <th>السجلات</th>
+                            <th>الحالة</th>
+                            <th>الجودة</th>
+                            <th>الإجراء</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${rows}
+                    </tbody>
+
+                </table>
+
+            </div>
+        `;
+
+
+        $$("[data-dataset-action='analyze']")
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            analyzeDataset(
+                                button.dataset.datasetId
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+    }
+
+
+    /* =====================================================
+       DATASET ANALYSIS
+    ===================================================== */
+
+    function analyzeDataset(
+        id
+    ) {
+
+        const dataset =
+            state.datasets.find(
+                item =>
+                    item.id === id
+            );
+
+
+        if (!dataset) {
+            return;
+        }
+
+
+        navigate(
+            "quality"
+        );
+
+
+        showToast(
+            `تم إرسال "${dataset.name}" إلى مرحلة تحليل الجودة.`
+        );
+
+    }
+
+
+    /* =====================================================
+       RECENT DATA
+    ===================================================== */
+
+    function renderRecentData() {
+
+        const container =
+            $("#recentData");
+
+
+        const items = [
+            ...state.importedFiles.map(
+                file => ({
+                    type: "ملف",
+                    name: file.name,
+                    date: file.addedAt
+                })
+            ),
+
+            ...state.sources.map(
+                source => ({
+                    type: "مصدر",
+                    name: source.url,
+                    date: source.addedAt
+                })
+            ),
+
+            ...state.datasets.map(
+                dataset => ({
+                    type: "Dataset",
+                    name: dataset.name,
+                    date: dataset.createdAt
+                })
+            )
+
+        ]
+            .sort(
+                (a,b) =>
+                    new Date(b.date) -
+                    new Date(a.date)
+            )
+            .slice(0, 8);
+
+
+        if (!items.length) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">📦</div>
+                    <strong>لا توجد بيانات بعد</strong>
+                    <p>أضف أول مصدر بيانات ليظهر هنا.</p>
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        let rows = "";
+
+
+        items.forEach(
+            item => {
+
+                rows += `
+                    <tr>
+                        <td>${escapeHtml(item.type)}</td>
+                        <td>${escapeHtml(item.name)}</td>
+                        <td>
+                            <span class="tag">
+                                تم الاستلام
+                            </span>
+                        </td>
+                    </tr>
+                `;
+
+            }
+        );
+
+
+        container.innerHTML = `
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>النوع</th>
+                            <th>المصدر</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${rows}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+    }
+
+
+    /* =====================================================
+       CLEANING OPERATIONS
+    ===================================================== */
+
+    $$("[data-action]")
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const action =
+                            button.dataset.action;
+
+                        registerCleaningOperation(
+                            action
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    function registerCleaningOperation(
+        action
+    ) {
+
+        const names = {
+
+            duplicates:
+                "فحص التكرارات",
+
+            missing:
+                "فحص البيانات الناقصة",
+
+            normalize:
+                "فحص توحيد البيانات",
+
+            validate:
+                "فحص صحة البيانات"
+
+        };
+
+
+        const name =
+            names[action] ||
+            action;
+
+
+        state.cleaningOperations.push({
+
+            id:
+                createId(),
+
+            action,
+
+            name,
+
+            startedAt:
+                new Date()
+                    .toISOString(),
+
+            status:
+                "queued"
+
+        });
+
+
+        saveState();
+
+        renderCleanLog();
+
+
+        showToast(
+            `تم تجهيز عملية "${name}" للتنفيذ الفعلي.`
+        );
+
+    }
+
+
+    function renderCleanLog() {
+
+        const container =
+            $("#cleanLog");
+
+
+        if (
+            !state.cleaningOperations.length
+        ) {
+
+            container.innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">🧹</div>
+                    <strong>لم يتم تشغيل عمليات تنظيف</strong>
+                    <p>عند معالجة Dataset ستظهر العمليات هنا.</p>
+                </div>
+            `;
+
+            $("#cleanOperationsCount")
+                .textContent =
+                "0 عملية";
+
+            return;
+
+        }
+
+
+        let html = `
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>العملية</th>
+                            <th>الحالة</th>
+                            <th>التاريخ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+
+        state.cleaningOperations
+            .slice()
+            .reverse()
+            .forEach(
+                operation => {
+
+                    html += `
+                        <tr>
+                            <td>
+                                ${escapeHtml(operation.name)}
+                            </td>
+
+                            <td>
+                                <span class="tag warning">
+                                    ${escapeHtml(operation.status)}
+                                </span>
+                            </td>
+
+                            <td>
+                                ${formatDate(operation.startedAt)}
+                            </td>
+                        </tr>
+                    `;
+
+                }
+            );
+
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+
+        container.innerHTML =
+            html;
+
+
+        $("#cleanOperationsCount")
+            .textContent =
+            `${state.cleaningOperations.length} عملية`;
+
+    }
+
+
+    /* =====================================================
+       TRAINING PREPARATION
+    ===================================================== */
+
+    $("#prepareTrainingBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                if (
+                    !state.datasets.length
+                ) {
+
+                    showToast(
+                        "أنشئ Dataset أولًا.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                setProcessing(
+                    "prepare",
+                    100
+                );
+
+                saveState();
+
+
+                showToast(
+                    "تم تجهيز طلب إعداد البيانات للتدريب. سيتم تنفيذ التحويل الفعلي بواسطة محرك البيانات."
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       QUICK BUTTONS
+    ===================================================== */
+
+    $("#startCollectBtn")
+        .addEventListener(
+            "click",
+            () => navigate(
+                "collect"
+            )
+        );
+
+
+    $("#manualDataBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                navigate(
+                    "collect"
+                );
+
+                setTimeout(
+                    () => {
+
+                        $("#manualData")
+                            .focus();
+
+                    },
+                    100
+                );
+
+            }
+        );
+
+
+    $("#newDatasetBtn")
+        .addEventListener(
+            "click",
+            () => navigate(
+                "collect"
+            )
+        );
+
+
+    $("#newProjectBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                openModal(
+                    "إنشاء مشروع",
+                    `
+                        <div class="field">
+                            <label>اسم المشروع</label>
+                            <input
+                                class="input"
+                                id="newProjectName"
+                                placeholder="مثال: Arabic AI Dataset"
+                            >
+                        </div>
+
+                        <br>
+
+                        <button
+                            class="btn btn-primary"
+                            id="confirmProject"
+                        >
+                            إنشاء المشروع
+                        </button>
+                    `
+                );
+
+
+                setTimeout(
+                    () => {
+
+                        $("#confirmProject")
+                            .addEventListener(
+                                "click",
+                                createProject
+                            );
+
+                    },
+                    0
+                );
+
+            }
+        );
+
+
+    function createProject() {
+
+        const input =
+            $("#newProjectName");
+
+        const name =
+            input.value.trim();
+
+
+        if (!name) {
+
+            showToast(
+                "أدخل اسم المشروع.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        state.projects.push({
+
+            id:
+                createId(),
+
+            name,
+
+            createdAt:
+                new Date()
+                    .toISOString()
+
+        });
+
+
+        saveState();
+
+        updateStats();
+
+        closeModal();
+
+
+        showToast(
+            `تم إنشاء المشروع "${name}".`
+        );
+
+    }
+
+
+    /* =====================================================
+       SETTINGS
+    ===================================================== */
+
+    $("#saveSettingsBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                state.settings.platformName =
+                    $("#platformName")
+                        .value
+                        .trim() ||
+                    "NOVA DATA AI";
+
+
+                state.settings.validationLevel =
+                    $("#validationLevel")
+                        .value;
+
+
+                saveState();
+
+
+                showToast(
+                    "تم حفظ الإعدادات."
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       NOTIFICATIONS
+    ===================================================== */
+
+    $("#notificationBtn")
+        .addEventListener(
+            "click",
+            () => {
+
+                openModal(
+                    "الإشعارات",
+                    `
+                        <div class="empty">
+                            <div class="empty-icon">🔔</div>
+                            <strong>لا توجد إشعارات جديدة</strong>
+                            <p>ستظهر تنبيهات جودة البيانات والمعالجة هنا.</p>
+                        </div>
+                    `
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       SOURCE CARDS
+    ===================================================== */
+
+    $$(".source-card[data-source]")
+        .forEach(
+            card => {
+
+                card.addEventListener(
+                    "click",
+                    () => {
+
+                        navigate(
+                            "collect"
+                        );
+
+
+                        const source =
+                            card.dataset.source;
+
+
+                        if (
+                            source ===
+                            "file"
+                        ) {
+
+                            setTimeout(
+                                () =>
+                                    $("#chooseFilesBtn").click(),
+                                100
+                            );
+
+                        }
+
+
+                        if (
+                            source ===
+                            "url"
+                        ) {
+
+                            setTimeout(
+                                () =>
+                                    $("#sourceUrl").focus(),
+                                100
+                            );
+
+                        }
+
+
+                        if (
+                            source ===
+                            "manual"
+                        ) {
+
+                            setTimeout(
+                                () =>
+                                    $("#manualData").focus(),
+                                100
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       UTILITIES
+    ===================================================== */
+
+    function createId() {
+
+        return (
+            Date.now()
+            .toString(36) +
+            Math.random()
+                .toString(36)
+                .slice(2, 10)
+        );
+
+    }
+
+
+    function escapeHtml(
+        value
+    ) {
+
+        return String(value ?? "")
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    function formatDate(
+        value
+    ) {
+
+        try {
+
+            return new Intl.DateTimeFormat(
+                "ar",
+                {
+                    dateStyle: "short",
+                    timeStyle: "short"
+                }
+            ).format(
+                new Date(value)
+            );
+
+        } catch {
+
+            return "—";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       QUALITY PLACEHOLDER STATE
+       لا يتم اختلاق نتيجة جودة.
+    ===================================================== */
+
+    function resetQualityDisplay() {
+
+        $("#scoreValue")
+            .textContent =
+            "—";
+
+
+        $("#qualityCount")
+            .textContent =
+            "—";
+
+
+        [
+            "qualityCompleteness",
+            "qualityUniqueness",
+            "qualityFormat",
+            "qualityValidity"
+        ].forEach(
+            id => {
+
+                const element =
+                    $("#" + id);
+
+                if (element) {
+                    element.style.width =
+                        "0%";
+                }
+
+            }
+        );
+
+
+        [
+            "qualityCompletenessValue",
+            "qualityUniquenessValue",
+            "qualityFormatValue",
+            "qualityValidityValue"
+        ].forEach(
+            id => {
+
+                const element =
+                    $("#" + id);
+
+                if (element) {
+                    element.textContent =
+                        "—";
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       INITIALIZATION
+    ===================================================== */
+
+    function initialize() {
+
+        loadState();
+
+        updateStats();
+
+        renderDatasets();
+
+        renderRecentData();
+
+        renderCleanLog();
+
+        refreshProcessing();
+
+        resetQualityDisplay();
+
+
+        navigate(
+            state.currentSection ||
+            "dashboard"
+        );
+
+
+        if (
+            state.settings
+                .platformName
+        ) {
+
+            $("#platformName")
+                .value =
+                state.settings
+                    .platformName;
+
+        }
+
+
+        if (
+            state.settings
+                .validationLevel
+        ) {
+
+            $("#validationLevel")
+                .value =
+                state.settings
+                    .validationLevel;
+
+        }
+
+
+        $("#processingStatus")
+            .textContent =
+            "جاهز";
+
+    }
+
+
+    initialize();
+
+
+})();
+</script>
+
+</body>
+</html>
+```
