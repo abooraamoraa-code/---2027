@@ -1,0 +1,47 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# NOVA DATA AI local data
+nova-data.json
+nova-data.json.tmp
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Uploaded/local datasets
+uploads/
+datasets/
+exports/
+storage/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+
+# Test/cache files
+.cache/
+coverage/
+
+# Private credentials
+*.pem
+*.key
+*.crt
+
+# Local backups
+*.bak
+*.backup
